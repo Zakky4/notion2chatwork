@@ -1,0 +1,2 @@
+# notion2chatwork
+Notionによる問い合わせ管理とタスクのリマインド機能
