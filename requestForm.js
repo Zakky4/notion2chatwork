@@ -110,30 +110,6 @@ function requestForm(e) {
   
   }
   
-  // スクリプトプロパティを取得
-  function scriptPropertyFor(key) {
-    return PropertiesService.getScriptProperties().getProperty(key);
-  }
-  
-  /**
-   * Notion 設定
-   */
-  
-  // NOTION_API_KEYを取得
-  function notionAPIKey() {
-    return scriptPropertyFor("NOTION_API_KEY")
-  }
-  
-  // NOTION_VERSIONを取得
-  function notionVersion() {
-    return scriptPropertyFor("NOTION_VERSION")
-  }
-  
-  // DATBASE_IDを取得
-  function databaseID() {
-    return scriptPropertyFor("DATBASE_ID")
-  }
-  
   // データを追加用payloadの生成
   function createPayload(values) {
     return {
@@ -193,45 +169,5 @@ function requestForm(e) {
         },
       }
     }
-  }
-  
-  // Notion に payload を send する
-  function sendNotion(url_sub, payload, method) {
-    const options = {
-      "method": method,
-      "headers": {
-        "Content-type": "application/json",
-        "Authorization": "Bearer " + notionAPIKey(),
-        "Notion-Version": notionVersion(),
-      },
-      "payload": payload ? JSON.stringify(payload) : null
-    };
-    // デバッグ時にはコメントを外す
-    // Logger.log(options)
-    Utilities.sleep(400)
-    const url = "https://api.notion.com/v1/" + url_sub
-    // Logger.log(url);
-    // Logger.log(JSON.parse(UrlFetchApp.fetch(url, options)))
-    return JSON.parse(UrlFetchApp.fetch(url, options))
-  }
-  
-  // Create Page API を呼び出す
-  function createPage(payload) {
-    return sendNotion("pages", payload, "POST")
-  }
-  
-  // Query Page API を呼び出す
-  function queryPage() {
-    const endpoint = `databases/${databaseID()}/query`;
-    const payload = null;
-    return sendNotion(endpoint, payload, "POST");
-  }
-  
-  /**
-   * Chatwork設定
-   */
-  // CHATWORK_TOKENを取得
-  function chatworkToken() {
-    return scriptPropertyFor("CHATWORK_TOKEN")
   }
   
