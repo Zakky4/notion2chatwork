@@ -1,5 +1,5 @@
 /**
- * 未対応が２日経過したらリマインド
+ * 未対応の状態で２日経過したらChatworkにリマインド通知
  */
 
 function remindChat() {
@@ -23,18 +23,6 @@ function remindChat() {
   });
   // Logger.log(values);
 
-  // 2日経過を算出
-  const today = new Date();
-  // Logger.log(today);
-  const cal_date = today.setDate(today.getDate() - 2);
-  // Logger.log(cal_date);
-  const remindDay = Utilities.formatDate(
-    new Date(cal_date),
-    "JST",
-    "yyyy-MM-dd"
-  );
-  // Logger.log(remindDay);
-
   values.forEach((item, index) => {
     // 登録日を取得
     const created = Utilities.formatDate(
@@ -43,10 +31,7 @@ function remindChat() {
       "yyyy-MM-dd"
     );
     // 未対応状態で２日以上経過していたらメッセージ送信
-    if (created <= remindDay && item[5] == "未対応") {
-      Logger.log(item[6]);
-      // Logger.log(created);
-
+    if (created <= remindDate(2) && item[5] == "未対応") {
       // Chatworkにメッセージを送信
       const cw_token = chatworkToken();
 
