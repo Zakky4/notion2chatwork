@@ -3,6 +3,7 @@
  */
 
 function remindChat() {
+  // Notion からデータを取得
   const objects = queryPage();
   const results = objects.results;
   const values = [];
@@ -33,34 +34,7 @@ function remindChat() {
     // 未対応状態で２日以上経過していたらメッセージ送信
     if (created <= remindDate(2) && item[5] == "未対応") {
       // Chatworkにメッセージを送信
-      const cw_token = chatworkToken();
-
-      // ルームID
-      let room_id = "";
-      if (item[4] === "はい") {
-        // 【code4biz】サポート用
-        room_id = "338413933";
-      } else {
-        // 【code4biz】営業用
-        room_id = "338413911";
-      }
-
-      // メッセージ生成
-      let message = `未対応から２日以上経過しています
-  ${item[0]}
-  ${item[1]}
-  ${item[2]}
-  ${item[3]}
-  ${item[4]}
-  ${item[5]}
-  ${item[6]}
-  受付日： ${created}`;
-
-      const client = ChatWorkClient.factory({ token: cw_token });
-      client.sendMessage({
-        room_id: room_id,
-        body: message,
-      });
+      sendChatwork(item[4], item, created);
     }
   });
 }
