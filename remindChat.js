@@ -1,40 +1,47 @@
 /**
- * 未対応の状態で２日経過したらChatworkにリマインド通知
+ * 問い合わせをNotionに登録しChatworkに通知
  */
 
-function remindChat() {
-  // Notion からデータを取得
-  const objects = queryPage();
-  const results = objects.results;
-  const values = [];
-  results.forEach((result, index) => {
-    let property = result.properties;
-    // Logger.log(property);
-    let value = [
-      property["法人名"].title[0].plain_text,
-      property["担当者名"].rich_text[0].plain_text,
-      property["メールアドレス"].email,
-      property["電話番号"].phone_number,
-      property["顧客タイプ"].select.name,
-      property["対応状況"].select.name,
-      property["問い合わせ内容"].rich_text[0].plain_text,
-      property["問い合わせ日時"].created_time,
-    ];
-    values.push(value);
-  });
-  // Logger.log(values);
+// フォームのデータを送信
+function requestForm(e) {
+  // const values = e.values;
+  // データをスプレッドシートから取得
+  const values = getLine();
 
-  values.forEach((item, index) => {
-    // 登録日を取得
-    const created = Utilities.formatDate(
-      new Date(item[7]),
-      "JST",
-      "yyyy-MM-dd"
-    );
-    // 未対応状態で２日以上経過していたらメッセージ送信
-    if (created <= remindDate(2) && item[5] == "未対応") {
-      // Chatworkにメッセージを送信
-      sendChatwork(item[4], item, created);
-    }
-  });
+  // 登録日を変換
+  const created = Utilities.formatDate(
+    new Date(values[0]),
+    "JST",
+    "yyyy-MM-dd HH:mm"
+  );
+
+  // データをNotionに登録
+  createPage(createPayload(values));
+
+  // Chatwork用配列生成
+  const chat = [
+    values[1],
+    values[2],
+    values[3],
+    values[4],
+    values[5],
+    "未対応",
+    values[6],
+  ];
+
+  // Chatworkにメッセージを送信
+  const remind_flg = 0;
+  sendChatwork(chat[4], chat, created, remind_flg);
+}
+
+// 現在のアクティブシートを得る
+function getSheet() {
+  return SpreadsheetApp.getActiveSheet();
+}
+
+// スプレッドシートの最終行の（フォームの送信）データを取得
+function getLine() {
+  const sheet = getSheet();
+  const line = sheet.getLastRow();
+  return sheet.getRange("A" + line + ":G" + line).getValues()[0];
 }

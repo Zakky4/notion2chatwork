@@ -2,8 +2,9 @@
  * Chatwork関数
  */
 
-function sendChatwork(room, item, created) {
-  // Chatworkにメッセージを送信
+// Chatworkにメッセージを送信
+function sendChatwork(room, item, created, remind_flg) {
+  // トークンを取得
   const cw_token = chatworkToken();
 
   // ルームID
@@ -16,8 +17,15 @@ function sendChatwork(room, item, created) {
     room_id = "338413911";
   }
 
+  // チャットのタイトル生成
+  let chat_title = "";
+  if (remind_flg === 1) {
+    chat_title = "未対応から２日以上経過しています";
+  } else {
+    chat_title = "問い合わせがありました";
+  }
   // メッセージ生成
-  let message = `未対応から２日以上経過しています
+  let message = `${chat_title}
   ${item[0]}
   ${item[1]}
   ${item[2]}
