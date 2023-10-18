@@ -25,15 +25,19 @@ function sendChatwork(room, item, created, remind_flg) {
     chat_title = "問い合わせがありました";
   }
   // メッセージ生成
-  let message = `${chat_title}
-  ${item[0]}
-  ${item[1]}
-  ${item[2]}
-  ${item[3]}
-  ${item[4]}
-  ${item[5]}
+  let message = `[info]
+  [title]${chat_title}[/title]
+  受付日時： ${created}
+  法人名： ${item[0]}
+  担当者名： ${item[1]}
+  メールアドレス： ${item[2]}
+  電話番号： ${item[3]}
+  契約済み： ${item[4]}
+  対応状況： ${item[5]}
+  問い合わせ内容： 
+  [hr]
   ${item[6]}
-  受付日： ${created}`;
+  [/info]`;
 
   // メッセージを送信
   const client = ChatWorkClient.factory({ token: cw_token });
